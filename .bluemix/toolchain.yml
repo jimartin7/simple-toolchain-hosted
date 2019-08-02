@@ -70,6 +70,9 @@ services:
         execute: true
   webide:
     service_id: orion # subsection for the Eclipse Orion Web IDE. This subsection is simple because the Web IDE doesn't require configuration
+  messaging:
+    service_id: slack
+    $ref: slack.yml
 form: # defines the form to use for the pipeline
   pipeline:
     parameters:
