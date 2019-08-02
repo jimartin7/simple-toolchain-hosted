@@ -31,7 +31,7 @@ template:
     git branch: >-
         [master](https://github.com/jimartin7/simple-toolchain-hosted/tree/master)
 toolchain:
-  name: 'simple-toolchain-{{timestamp}}'
+  name: 'my-custom-toolchain-{{timestamp}}'
   template:
     getting_started:
       $ref: "#/messages/template.gettingStarted"
