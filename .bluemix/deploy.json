@@ -21,7 +21,9 @@
             "type": "string",
             "validator": {
                 "v-type": "cf-region",
-                "params": ["api-key"]
+                "params": [
+                    "api-key"
+                ]
             }
         },
         "prod-organization": {
@@ -31,7 +33,9 @@
             "type": "string",
             "validator": {
                 "v-type": "cf-org",
-                "params": ["prod-region"]
+                "params": [
+                    "prod-region"
+                ]
             }
         },
         "prod-space": {
@@ -41,7 +45,9 @@
             "type": "string",
             "validator": {
                 "v-type": "cf-space",
-                "params": ["prod-organization"]
+                "params": [
+                    "prod-organization"
+                ]
             }
         },
         "api-key": {
@@ -68,7 +74,8 @@
         "prod-app-name",
         "api-key"
     ],
-    "form": [{
+    "form": [
+        {
             "type": "validator",
             "url": "/devops/validator/validator-v1.html"
         },
@@ -96,7 +103,8 @@
                 "33%",
                 "33%"
             ],
-            "items": [{
+            "items": [
+                {
                     "type": "label",
                     "title": {
                         "$ref": "#/messages/region"

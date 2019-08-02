@@ -1,7 +1,7 @@
 ---
 defaultBaseImageVersion: latest
 stages:
-- name: BUILD
+- name: BUILD # The BUILD stage takes input from the master branch of a Git repo by using the repo that is defined in the toolchain.yml file
   inputs:
   - type: git
     branch: master
@@ -10,8 +10,8 @@ stages:
   - type: commit
   jobs:
   - name: Build
-    type: builder
-- name: DEPLOY
+    type: builder # This job is of the type builder and uses the defaults for the build job
+- name: DEPLOY # generates the DEPLOY stage input
   inputs:
   - type: job
     stage: BUILD
@@ -25,7 +25,7 @@ stages:
   - name: APP_URL
     value: undefined
     type: text
-  jobs:
+  jobs: # The job for the DEPLOY stage is defined as follows
   - name: Rolling Deploy
     type: deployer
     target:
@@ -34,16 +34,25 @@ stages:
       space: ${PROD_SPACE_NAME}
       application: ${CF_APP_NAME}
       api_key: ${API_KEY}
+    # The script for the DEPLOY stage is defined as follows
+    # script that performs a "Rolling Deploy" or "Blue-Green Deploy". The script takes the following steps:
+
+    # a. If the app is not deployed, deploy it.
+    # b. Else, if the app is deployed:
+    # Rename the existing deployed app.
+    # Try to deploy the new app version.
+    # If a deployment problem occurs, roll back and rename the old app version.
     script: |
       #!/bin/bash
       # Push app
       if ! cf app "$CF_APP"; then  
-        cf push "$CF_APP"
+        cf push "$CF_APP" # Despliega la app
       else
         OLD_CF_APP="${CF_APP}-OLD-$(date +"%s")"
         rollback() {
           set +e  
-          if cf app "$OLD_CF_APP"; then
+          if cf app "$OLD_CF_APP"; 
+          then
             cf logs "$CF_APP" --recent
             cf delete "$CF_APP" -f
             cf rename "$OLD_CF_APP" "$CF_APP"

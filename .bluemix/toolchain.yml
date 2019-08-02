@@ -26,33 +26,31 @@ template:
     # compute the git url and branch values dynamically so that they remain correct when repo is forked etc. 
     # note: `repository` url param must always be provided while the `branch` url param is optional
     # the computed urls are of the same format as the original static urls shown above
-    git url: >
-        '[' + $env.repository + '](' + $env.repository + ')'
-    git branch: >
-        $env.branch ?
-          '[' + $env.branch + ']('+ $env.repository + '/tree/' + $env.branch + ')' :
-          '[master]('+ $env.repository + '/tree/master)'
+    git url: >-
+        [https://github.com/jimartin7/simple-toolchain-hosted](https://github.com/jimartin7/simple-toolchain-hosted)
+    git branch: >-
+        [master](https://github.com/jimartin7/simple-toolchain-hosted/tree/master)
 toolchain:
   name: 'simple-toolchain-{{timestamp}}'
   template:
     getting_started:
       $ref: "#/messages/template.gettingStarted"
 services:
-  sample-repo:
+  sample-repo: #T he 1st service section defines a range of git providers
     service_id: >
       $env.source_provider ? $env.source_provider : 'hostedgit'
     parameters:
       repo_name: '{{toolchain.name}}'
       repo_url: >
         $env.type === 'link' ? 
-          $env.app_repo : 'https://github.com/open-toolchain/node-hello-world'
+          $env.app_repo : 'https://github.com/open-toolchain/node-hello-world' #url del código a incluir por defecto con el toolchain, se puede cambiar la url
       source_repo_url: >
         $env.type === 'fork' || $env.type === 'clone' ? 
           $env.app_repo : 'https://github.com/open-toolchain/node-hello-world'
       type: $env.type || 'clone'
       has_issues: true
       enable_traceability: true
-  sample-build:
+  sample-build: # The 2nd service section is about the pipeline
     service_id: pipeline
     parameters:
       services:
@@ -61,9 +59,9 @@ services:
       ui-pipeline: true
       configuration:
         content:
-          $text: pipeline.yml
+          $text: pipeline.yml # The details for the pipeline are defined in the pipeline.yml file
         env:
-          SAMPLE_REPO: sample-repo
+          SAMPLE_REPO: sample-repo # The sample-repo name is the name for the source sample repo that is defined in the sample-repo subsection
           CF_APP_NAME: '{{form.pipeline.parameters.prod-app-name}}'
           PROD_SPACE_NAME: '{{form.pipeline.parameters.prod-space}}'
           PROD_ORG_NAME: '{{form.pipeline.parameters.prod-organization}}'
@@ -71,10 +69,10 @@ services:
           API_KEY: '{{form.pipeline.parameters.api-key}}'
         execute: true
   webide:
-    service_id: orion
-form:
+    service_id: orion # subsection for the Eclipse Orion Web IDE. This subsection is simple because the Web IDE doesn't require configuration
+form: # defines the form to use for the pipeline
   pipeline:
     parameters:
-      prod-app-name: '{{services.sample-repo.parameters.repo_name}}'
+      prod-app-name: '{{services.sample-repo.parameters.repo_name}}' # The default app name is defined; the repo-name name from the sample-repo service is used as a default
     schema:
-      $ref: deploy.json
+      $ref: deploy.json # the deploy.json file defines form inputs from the user. In the UI for Delivery Pipeline
